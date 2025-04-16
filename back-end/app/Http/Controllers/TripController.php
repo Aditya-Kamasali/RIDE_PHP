@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Events\TripAccepted;
+use App\Events\TripEnded;
+use App\Events\TripLocationUpdated;
+use App\Events\TripStarted;
 use App\Http\Controllers\Controller;
 use App\Models\Trip;
 use Illuminate\Http\Request;
@@ -54,7 +57,7 @@ class TripController extends Controller
 
         return $trip;
 
-        TripAccepted::dispatch($trip);
+        TripAccepted::dispatch($trip, $request->user());
     }
 
     public function start(Request $request, Trip $trip)
@@ -66,6 +69,7 @@ class TripController extends Controller
 
         $trip->load('driver.user');
         return $trip;
+        TripStarted::dispatch($trip, $request->user());
     }
 
     public function end(Request $request, Trip $trip)
@@ -76,6 +80,7 @@ class TripController extends Controller
         ]);
         $trip->load('driver.user');
         return $trip;
+        TripEnded::dispatch($trip, $request->user());
     }
 
     public function location(Request $request, Trip $trip)
@@ -90,5 +95,6 @@ class TripController extends Controller
 
         $trip->load('driver.user');
         return $trip;
+        TripLocationUpdated::dispatch($trip, $request->user());
     }
 }
